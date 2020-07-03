@@ -41,38 +41,7 @@ def chicago_taxi_pipeline():
 
     regression_model = train_regression_task.outputs['model']
 
-    train_classifier_task = train_classifier_op(
-        training_data=evaluation_data_for_classification_in_csv,
-        label_column=0,
-        num_iterations=200,
-    )
-
-    classification_model = train_classifier_task.outputs['model']
-
-    predict_values_op(
-        data=evaluation_data_for_regression_in_csv,
-        model=regression_model,
-        label_column=0,
-    )
-
-    predict_classes_op(
-        data=evaluation_data_for_classification_in_csv,
-        model=classification_model,
-        label_column=0,
-    )
-
-    # predict_class_probabilities_op(
-    #     data=evaluation_data_for_classification_in_csv,
-    #     model=classification_model,
-    #     label_column=0,
-    # )
-
-    export_model_to_AppleCoreML_op(regression_model)
-    export_model_to_AppleCoreML_op(classification_model)
-
-    export_model_to_ONNX_op(regression_model)
-    export_model_to_ONNX_op(classification_model)
 
 
 if __name__ == '__main__':
-    kfp.compiler.Compiler().compile(chicago_taxi_pipeline, __file__ + '.zip')
+    kfp.compiler.Compiler().compile(chicago_taxi_pipeline, __file__ + '01.zip')
