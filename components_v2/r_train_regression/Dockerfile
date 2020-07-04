@@ -11,3 +11,5 @@ RUN apt-get update && apt-get install -y \
     libcairo2-dev/unstable \
     libxt-dev \
     libssl-dev
+
+#TODO: add the RScript and Run the CMD
