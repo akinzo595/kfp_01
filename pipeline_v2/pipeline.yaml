@@ -1,0 +1,137 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Workflow
+metadata:
+  generateName: chicago-taxi-cab-pipeline-
+  annotations: {pipelines.kubeflow.org/kfp_sdk_version: 0.5.1, pipelines.kubeflow.org/pipeline_compilation_time: '2020-07-04T17:46:14.403261',
+    pipelines.kubeflow.org/pipeline_spec: '{"description": "Pipeline, Downloading
+      Data from Google Storage Bucket and Running Training Model in R", "name": "Chicago
+      Taxi Cab Pipeline"}'}
+  labels: {pipelines.kubeflow.org/kfp_sdk_version: 0.5.1}
+spec:
+  entrypoint: chicago-taxi-cab-pipeline
+  templates:
+  - name: chicago-taxi-cab-pipeline
+    dag:
+      tasks:
+      - {name: download-data-from-google-storage, template: download-data-from-google-storage}
+      - name: pandas-transform-dataframe-in-csv-format
+        template: pandas-transform-dataframe-in-csv-format
+        dependencies: [download-data-from-google-storage]
+        arguments:
+          artifacts:
+          - {name: download-data-from-google-storage-data, from: '{{tasks.download-data-from-google-storage.outputs.artifacts.download-data-from-google-storage-data}}'}
+  - name: download-data-from-google-storage
+    container:
+      args: []
+      command:
+      - bash
+      - -ex
+      - -c
+      - |
+        if [ -n "${GOOGLE_APPLICATION_CREDENTIALS}" ]; then
+            gcloud auth activate-service-account --key-file="${GOOGLE_APPLICATION_CREDENTIALS}"
+        fi
+
+        stat_result=$(gsutil ls -d "$0")
+        if [[ "$stat_result" == */ ]]; then
+            mkdir -p "$1" # When source path is a directory, gsutil requires the destination to also be a directory
+        else
+            mkdir -p "$(dirname "$1")"
+        fi
+
+        gsutil -m rsync -r "$0" "$1" # gsutil cp has different path handling than Linux cp. It always puts the source directory (name) inside the destination directory. gsutil rsync does not have that problem.
+      - gs://kf-demo-data-bucket/taxi_data.csv
+      - /tmp/outputs/Data/data
+      env:
+      - {name: GOOGLE_APPLICATION_CREDENTIALS, value: /secret/gcp-credentials/user-gcp-sa.json}
+      - {name: CLOUDSDK_AUTH_CREDENTIAL_FILE_OVERRIDE, value: /secret/gcp-credentials/user-gcp-sa.json}
+      image: google/cloud-sdk
+      volumeMounts:
+      - {mountPath: /secret/gcp-credentials, name: gcp-credentials-user-gcp-sa}
+    outputs:
+      artifacts:
+      - {name: download-data-from-google-storage-data, path: /tmp/outputs/Data/data}
+    metadata:
+      labels: {pipelines.kubeflow.org/pipeline-sdk-type: kfp}
+      annotations: {pipelines.kubeflow.org/component_spec: '{"inputs": [{"name": "GCS
+          path", "type": "URI"}], "name": "Download Data from Google Storage", "outputs":
+          [{"name": "Data"}]}'}
+    volumes:
+    - name: gcp-credentials-user-gcp-sa
+      secret: {secretName: user-gcp-sa}
+  - name: pandas-transform-dataframe-in-csv-format
+    container:
+      args: [--table, /tmp/inputs/table/data, --transform-code, 'df.insert(0, "was_tipped",
+          df["tips"] > 0); del df["tips"]', --transformed-table, /tmp/outputs/transformed_table/data]
+      command:
+      - sh
+      - -c
+      - (PIP_DISABLE_PIP_VERSION_CHECK=1 python3 -m pip install --quiet --no-warn-script-location
+        'pandas==1.0.4' || PIP_DISABLE_PIP_VERSION_CHECK=1 python3 -m pip install
+        --quiet --no-warn-script-location 'pandas==1.0.4' --user) && "$0" "$@"
+      - python3
+      - -u
+      - -c
+      - |
+        def _make_parent_dirs_and_return_path(file_path: str):
+            import os
+            os.makedirs(os.path.dirname(file_path), exist_ok=True)
+            return file_path
+        def Pandas_Transform_DataFrame_in_CSV_format(
+            table_path,
+            transformed_table_path,
+            transform_code,
+        ):
+            '''Transform DataFrame loaded from a CSV file.
+            Inputs:
+                table: Table to transform.
+                transform_code: Transformation code. Code is written in Python and can consist of multiple lines.
+                    The DataFrame variable is called "df".
+                    Examples:
+                    - `df['prod'] = df['X'] * df['Y']`
+                    - `df = df[['X', 'prod']]`
+                    - `df.insert(0, "is_positive", df["X"] > 0)`
+            Outputs:
+                transformed_table: Transformed table.
+            Annotations:
+                author: Alexey Volkov <alexey.volkov@ark-kun.com>
+            '''
+            import pandas
+            df = pandas.read_csv(
+                table_path,
+            )
+            exec(transform_code)
+            df.to_csv(
+                transformed_table_path,
+                index=False,
+            )
+        import argparse
+        _parser = argparse.ArgumentParser(prog='Pandas Transform DataFrame in CSV format', description='Transform DataFrame loaded from a CSV file.\n\n    Inputs:\n        table: Table to transform.\n        transform_code: Transformation code. Code is written in Python and can consist of multiple lines.\n            The DataFrame variable is called "df".\n            Examples:\n            - `df[\'prod\'] = df[\'X\'] * df[\'Y\']`\n            - `df = df[[\'X\', \'prod\']]`\n            - `df.insert(0, "is_positive", df["X"] > 0)`\n\n    Outputs:\n        transformed_table: Transformed table.\n\n    Annotations:\n        author: Alexey Volkov <alexey.volkov@ark-kun.com>')
+        _parser.add_argument("--table", dest="table_path", type=str, required=True, default=argparse.SUPPRESS)
+        _parser.add_argument("--transform-code", dest="transform_code", type=str, required=True, default=argparse.SUPPRESS)
+        _parser.add_argument("--transformed-table", dest="transformed_table_path", type=_make_parent_dirs_and_return_path, required=True, default=argparse.SUPPRESS)
+        _parsed_args = vars(_parser.parse_args())
+        _outputs = Pandas_Transform_DataFrame_in_CSV_format(**_parsed_args)
+      image: python:3.7
+    inputs:
+      artifacts:
+      - {name: download-data-from-google-storage-data, path: /tmp/inputs/table/data}
+    outputs:
+      artifacts:
+      - {name: pandas-transform-dataframe-in-csv-format-transformed_table, path: /tmp/outputs/transformed_table/data}
+    metadata:
+      labels: {pipelines.kubeflow.org/pipeline-sdk-type: kfp}
+      annotations: {pipelines.kubeflow.org/component_spec: '{"description": "Transform
+          DataFrame loaded from a CSV file.\n    Inputs:\n        table: Table to
+          transform.\n        transform_code: Transformation code. Code is written
+          in Python and can consist of multiple lines.\n            The DataFrame
+          variable is called \"df\".\n            Examples:\n            - `df[''prod'']
+          = df[''X''] * df[''Y'']`\n            - `df = df[[''X'', ''prod'']]`\n            -
+          `df.insert(0, \"is_positive\", df[\"X\"] > 0)`\n    Outputs:\n        transformed_table:
+          Transformed table.\n    Annotations:\n        author: Alexey Volkov <alexey.volkov@ark-kun.com>",
+          "inputs": [{"name": "table", "type": "CSV"}, {"name": "transform_code",
+          "type": "PythonCode"}], "name": "Pandas Transform DataFrame in CSV format",
+          "outputs": [{"name": "transformed_table", "type": "CSV"}]}'}
+  arguments:
+    parameters: []
+  serviceAccountName: pipeline-runner
