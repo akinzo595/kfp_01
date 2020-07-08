@@ -44,4 +44,4 @@ def chicago_taxi_pipeline():
 
 
 if __name__ == '__main__':
-    kfp.compiler.Compiler().compile(chicago_taxi_pipeline, __file__ + '01.zip')
+    kfp.compiler.Compiler().compile(chicago_taxi_pipeline, __file__ + '03.zip')
