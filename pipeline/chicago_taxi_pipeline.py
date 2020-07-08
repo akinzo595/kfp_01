@@ -33,7 +33,7 @@ def chicago_taxi_pipeline():
     evaluation_data_for_classification_in_csv = training_data_for_classification_in_csv
 
     train_regression_task = train_regression_op(
-        training_data=training_data_in_csv,
+        training_data="training_data_in_csv",
         loss_function='RMSE',
         label_column=0,
         num_iterations=200,
