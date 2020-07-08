@@ -1,7 +1,7 @@
 name: visualize table
 description: visualize dataset in table
 inputs:
-  - {name: train_file_path, type: CSV}
+  - {name: train_file_path, type: string}
 outputs:
   - {name: MLPipeline UI metadata, type: UI metadata}
 implementation:
