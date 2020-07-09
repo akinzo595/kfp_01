@@ -18,7 +18,7 @@ visualization_op = components.load_component_from_url(f'{COMPONENT_URI}/visualiz
     description="Pipeline Downloading Data from Google Storage Bucket and Running Training Model in R"
 )
 
-#Pipelines
+#Pipelines for chicago dataset, transformation and training . 
 def chicago_taxi_pipeline():
     gs_download_training_data_in_csv = chicago_taxi_dataset_op(
         gcs_path='gs://kf-demo-data-bucket/taxi_data.csv'
