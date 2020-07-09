@@ -1,11 +1,14 @@
 import kfp
 from kfp import components
 
+#Url to the component that contains the pipelines
 COMPONENT_URI = 'https://raw.githubusercontent.com/MavenCode/kfp_01/master/components'
 
+#Data ingestion components pointing to the yaml file 
 chicago_taxi_dataset_op = components.load_component_from_url(f'{COMPONENT_URI}/chicago_taxi_trips/component.yaml')
 pandas_transform_csv_op = components.load_component_from_url(f'{COMPONENT_URI}/pandas_transform_df/component.yaml')
 
+#Training components
 train_classifier_op = components.load_component_from_url(f'{COMPONENT_URI}/train_classifier/component.yaml')
 train_regression_op = components.load_component_from_url(f'{COMPONENT_URI}/train_regression/component.yaml')
 predict_classes_op = components.load_component_from_url(f'{COMPONENT_URI}/predict_classes/component.yaml')
@@ -16,7 +19,7 @@ export_model_to_AppleCoreML_op = components.load_component_from_url(
     f'{COMPONENT_URI}/export_model_to_AppleCoreML/component.yaml')
 export_model_to_ONNX_op = components.load_component_from_url(f'{COMPONENT_URI}/export_model_to_ONNX/component.yaml')
 
-
+#Pipelines
 def chicago_taxi_pipeline():
     training_data_in_csv = chicago_taxi_dataset_op(
         where='trip_start_timestamp >= "2019-01-01" AND trip_start_timestamp < "2019-02-01"',
@@ -42,6 +45,6 @@ def chicago_taxi_pipeline():
     regression_model = train_regression_task.outputs['model']
 
 
-
+# The below ill output .zip file and you may use your prevered achive tool
 if __name__ == '__main__':
     kfp.compiler.Compiler().compile(chicago_taxi_pipeline, __file__ + '03.zip')
