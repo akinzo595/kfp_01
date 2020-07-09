@@ -1,8 +1,10 @@
 import kfp
 from kfp import components
 
+#URL to both the component and the pipelines
 COMPONENT_URI = 'https://raw.githubusercontent.com/MavenCode/kfp_01/master/components'
 
+#Data ingestion
 chicago_taxi_dataset_op = components.load_component_from_url(f'{COMPONENT_URI}/chicago_taxi_trips/component.yaml')
 pandas_transform_csv_op = components.load_component_from_url(f'{COMPONENT_URI}/pandas_transform_df/component.yaml')
 
@@ -16,7 +18,7 @@ export_model_to_AppleCoreML_op = components.load_component_from_url(
     f'{COMPONENT_URI}/export_model_to_AppleCoreML/component.yaml')
 export_model_to_ONNX_op = components.load_component_from_url(f'{COMPONENT_URI}/export_model_to_ONNX/component.yaml')
 
-
+#Pipelines
 def chicago_taxi_pipeline():
     training_data_in_csv = chicago_taxi_dataset_op(
         where='trip_start_timestamp >= "2019-01-01" AND trip_start_timestamp < "2019-02-01"',
