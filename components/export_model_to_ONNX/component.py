@@ -1,5 +1,6 @@
 from kfp.components import InputPath, OutputPath, create_component_from_func
 
+#Defining function to convert CatBoostModel to ONYX
 def convert_CatBoostModel_to_ONNX(
     model_path: InputPath('CatBoostModel'),
     converted_model_path: OutputPath('ONNX'),
