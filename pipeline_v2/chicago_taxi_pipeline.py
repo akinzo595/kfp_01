@@ -3,7 +3,7 @@ import kfp.dsl as dsl
 from kfp import components
 from kfp.gcp import use_gcp_secret
 
-#Url to the component that contains the pipelines
+#Url to the component that contains the components and pipelines
 COMPONENT_URI = 'https://raw.githubusercontent.com/MavenCode/kfp_01/master/components_v2'
 
 #Data ingestion and transformation
