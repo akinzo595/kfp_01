@@ -1,3 +1,4 @@
+#Import required libraries for r component
 library("optparse")
 library("RDS")
 #Training parameters
@@ -5,7 +6,7 @@ regression_model <- function(training_data, loss_function, num_iterations, learn
     print('hello ML training...')
     output_model_path
 }
-#Place holder for input parameters
+#The step below is responsible for running regression model, defining the requirement for this specific requirement
 option_list = list(
   make_option(
     "-t","--trainingdata", type="character", default=NULL, metavar="character"),
