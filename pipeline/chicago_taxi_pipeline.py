@@ -4,10 +4,11 @@ from kfp import components
 #URL to both the component and the pipelines
 COMPONENT_URI = 'https://raw.githubusercontent.com/MavenCode/kfp_01/master/components'
 
-#Data ingestion
+#Data ingestion that loads the dataset for the chicago trip and uses panda to transform the data a csv
 chicago_taxi_dataset_op = components.load_component_from_url(f'{COMPONENT_URI}/chicago_taxi_trips/component.yaml')
 pandas_transform_csv_op = components.load_component_from_url(f'{COMPONENT_URI}/pandas_transform_df/component.yaml')
 
+#Training components for regression, classifier and predictions
 train_classifier_op = components.load_component_from_url(f'{COMPONENT_URI}/train_classifier/component.yaml')
 train_regression_op = components.load_component_from_url(f'{COMPONENT_URI}/train_regression/component.yaml')
 predict_classes_op = components.load_component_from_url(f'{COMPONENT_URI}/predict_classes/component.yaml')
@@ -18,7 +19,7 @@ export_model_to_AppleCoreML_op = components.load_component_from_url(
     f'{COMPONENT_URI}/export_model_to_AppleCoreML/component.yaml')
 export_model_to_ONNX_op = components.load_component_from_url(f'{COMPONENT_URI}/export_model_to_ONNX/component.yaml')
 
-#Pipelines
+#Pipelines function for regression and classification
 def chicago_taxi_pipeline():
     training_data_in_csv = chicago_taxi_dataset_op(
         where='trip_start_timestamp >= "2019-01-01" AND trip_start_timestamp < "2019-02-01"',
