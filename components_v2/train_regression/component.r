@@ -1,10 +1,11 @@
 library("optparse")
 library("RDS")
-
+#Training parameters
 regression_model <- function(training_data, loss_function, num_iterations, learning_rate, depth, output_model_path) {
     print('hello ML training...')
     output_model_path
 }
+#Place holder for input parameters
 option_list = list(
   make_option(
     "-t","--trainingdata", type="character", default=NULL, metavar="character"),
