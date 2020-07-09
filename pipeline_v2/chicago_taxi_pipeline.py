@@ -3,8 +3,10 @@ import kfp.dsl as dsl
 from kfp import components
 from kfp.gcp import use_gcp_secret
 
+#Url to the component that contains the pipelines
 COMPONENT_URI = 'https://raw.githubusercontent.com/MavenCode/kfp_01/master/components_v2'
 
+#Data ingestion and transformation
 chicago_taxi_dataset_op = components.load_component_from_url(
     f'{COMPONENT_URI}/chicago_taxi_trips_gs_download/component.yaml')
 pandas_transform_csv_op = components.load_component_from_url(f'{COMPONENT_URI}/pandas_transform_df/component.yaml')
@@ -15,6 +17,8 @@ visualization_op = components.load_component_from_url(f'{COMPONENT_URI}/visualiz
     name="Chicago Taxi Cab Pipeline",
     description="Pipeline Downloading Data from Google Storage Bucket and Running Training Model in R"
 )
+
+#Pipelines
 def chicago_taxi_pipeline():
     gs_download_training_data_in_csv = chicago_taxi_dataset_op(
         gcs_path='gs://kf-demo-data-bucket/taxi_data.csv'
