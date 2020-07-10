@@ -1,6 +1,6 @@
 # kfp  provides a set of Python packages that you can use to specify and run your machine learning (ML) workflows. #
 # kfp.dsl: contains the domain-specific language (DSL) that you can use to define and interact with pipelines and components #
-# components: includes classes and methods for interacting with pipeline components. Methods in this package include #
+# components: includes classes and methods for interacting with pipeline components. #
 # GCP secret: Secrets are secure objects which store sensitive data, such as passwords, OAuth tokens, and SSH keys, in your clusters #
 
 import kfp
