@@ -8,7 +8,7 @@ import kfp.dsl as dsl
 from kfp import components
 from kfp.gcp import use_gcp_secret
 
-#This defines the Url to the component that contains the components and pipelines. Google cloud storage bucket could also be an option #
+# This defines the Url to the component that contains the components and pipelines. Google cloud storage bucket could also be an option #
 COMPONENT_URI = 'https://raw.githubusercontent.com/MavenCode/kfp_01/master/components_v2'
 
 #This line of code does the ingestion, loading and transformation pulling data from the component directory/folder #
