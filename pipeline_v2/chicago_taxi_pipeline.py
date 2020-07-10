@@ -1,3 +1,6 @@
+#kfp.dsl contains the domain-specific language (DSL) that you can use to define and interact with pipelines and components methods. classes, and modules. in the kfp.dsl package include, but are not limited to, the following:#
+#Methods, classes, and modules. in thekfp.dsl package include, but are not limited to, the following:
+
 import kfp
 import kfp.dsl as dsl
 from kfp import components
