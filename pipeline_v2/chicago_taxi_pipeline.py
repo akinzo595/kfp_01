@@ -23,7 +23,7 @@ visualization_op = components.load_component_from_url(f'{COMPONENT_URI}/visualiz
     description="Pipeline Downloading Data from Google Storage Bucket and Running Training Model in R"
 )
 
-#This funtion defines the Pipelines for dowloading chicago dataset. Paths to storage bucket for the csv file is alo defined.# 
+#This funtion defines the Pipelines that dowloads chicago dataset. Paths to storage bucket for the csv file is alo defined.# 
 #service account access will be applied based on the funtions . The training data will be taken fron the panda transformed csv file #
 # output parameters is also defined as Tip in this case #
 #This file can be run from the command line as "python chicago_taxi_pipeline" it should generate a .zip file if it runs succesfully #
