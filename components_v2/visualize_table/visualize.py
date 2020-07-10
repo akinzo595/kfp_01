@@ -1,3 +1,5 @@
+# This funtion defines the datatabe, location of file , file type, format and source. The file will also dump a json file 
+
 def datatable(
         train_file_path
 ):
