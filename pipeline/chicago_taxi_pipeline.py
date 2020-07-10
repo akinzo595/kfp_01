@@ -26,7 +26,7 @@ export_model_to_AppleCoreML_op = components.load_component_from_url(
 export_model_to_ONNX_op = components.load_component_from_url(f'{COMPONENT_URI}/export_model_to_ONNX/component.yaml')
 
 # This funtion defines the Pipelines for chicago dataset. Training data input parameters is from raining_data_in_csv #
-# Training data set for classification and transformation input parameters is from pandas_transform_csv_op #
+# Training data set for classification and transformation. Input parameters is from pandas_transform_csv_op #
 def chicago_taxi_pipeline():
     training_data_in_csv = chicago_taxi_dataset_op(
         where='trip_start_timestamp >= "2019-01-01" AND trip_start_timestamp < "2019-02-01"',
