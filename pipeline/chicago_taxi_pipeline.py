@@ -12,9 +12,10 @@ COMPONENT_URI = 'https://raw.githubusercontent.com/MavenCode/kfp_01/master/compo
 chicago_taxi_dataset_op = components.load_component_from_url(f'{COMPONENT_URI}/chicago_taxi_trips/component.yaml')
 pandas_transform_csv_op = components.load_component_from_url(f'{COMPONENT_URI}/pandas_transform_df/component.yaml')
 
-# Loading components and training for  regression, classifier, preddict_classes and predic_values #
+# Loading components and training for  regression, classifier, preddict_classes and predict_values #
 # Exporting model to AppleCoreML for prediction using the component URL
-# Exporting model to ONYX 
+# Exporting model to ONYX #
+
 train_classifier_op = components.load_component_from_url(f'{COMPONENT_URI}/train_classifier/component.yaml')
 train_regression_op = components.load_component_from_url(f'{COMPONENT_URI}/train_regression/component.yaml')
 predict_classes_op = components.load_component_from_url(f'{COMPONENT_URI}/predict_classes/component.yaml')
@@ -27,6 +28,8 @@ export_model_to_ONNX_op = components.load_component_from_url(f'{COMPONENT_URI}/e
 
 # This funtion defines the Pipelines for chicago dataset. Training data input parameters is from raining_data_in_csv #
 # Training data set for classification and transformation. Input parameters is from pandas_transform_csv_op #
+# Setting output parameters #
+
 def chicago_taxi_pipeline():
     training_data_in_csv = chicago_taxi_dataset_op(
         where='trip_start_timestamp >= "2019-01-01" AND trip_start_timestamp < "2019-02-01"',
