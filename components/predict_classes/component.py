@@ -1,6 +1,7 @@
 # components: includes classes and methods for interacting with pipeline components. #
 # InputPath should be used as function parameter annotation to tell the system to pass the data file path to the function instead of passing the actual data. #
-# OutputPath should be used as function parameter annotation to tell the system that the function wants to output data by writing it into a file with the given path instead of returning the data from the function
+# OutputPath should be used as function parameter annotation to tell the system that the function wants to output data by writing it into a file with the given path #
+# -- > instead of returning the data from the function #
 
 from kfp.components import InputPath, OutputPath, create_component_from_func
 
