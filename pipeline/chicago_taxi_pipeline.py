@@ -1,14 +1,20 @@
+# kfp  provides a set of Python packages that you can use to specify and run your machine learning (ML) workflows. #
+# components: includes classes and methods for interacting with pipeline components. Methods in this package include #
+
 import kfp
 from kfp import components
 
-#URL to both the component and the pipelines
+# This defines the Url to the component that contains the components and pipelines. Google cloud storage bucket could also be an option #
 COMPONENT_URI = 'https://raw.githubusercontent.com/MavenCode/kfp_01/master/components'
 
-#Data ingestion that loads the dataset for the chicago trip and uses panda to transform the data a csv
+# Data ingestion that loads the dataset for the chicago trip and panda transform csv using components to load and transform#
+
 chicago_taxi_dataset_op = components.load_component_from_url(f'{COMPONENT_URI}/chicago_taxi_trips/component.yaml')
 pandas_transform_csv_op = components.load_component_from_url(f'{COMPONENT_URI}/pandas_transform_df/component.yaml')
 
-#Training components for regression, classifier and predictions
+# Loading components and training for  regression, classifier, preddict_classes and predic_values #
+# Exporting model to AppleCoreML for prediction using the component URL
+# Exporting model to ONYX 
 train_classifier_op = components.load_component_from_url(f'{COMPONENT_URI}/train_classifier/component.yaml')
 train_regression_op = components.load_component_from_url(f'{COMPONENT_URI}/train_regression/component.yaml')
 predict_classes_op = components.load_component_from_url(f'{COMPONENT_URI}/predict_classes/component.yaml')
@@ -19,7 +25,8 @@ export_model_to_AppleCoreML_op = components.load_component_from_url(
     f'{COMPONENT_URI}/export_model_to_AppleCoreML/component.yaml')
 export_model_to_ONNX_op = components.load_component_from_url(f'{COMPONENT_URI}/export_model_to_ONNX/component.yaml')
 
-#Pipelines function for regression and classification
+# This funtion defines the Pipelines for chicago dataset. Training data input parameters is from raining_data_in_csv #
+# Training data set for classification and transformation input parameters is from pandas_transform_csv_op #
 def chicago_taxi_pipeline():
     training_data_in_csv = chicago_taxi_dataset_op(
         where='trip_start_timestamp >= "2019-01-01" AND trip_start_timestamp < "2019-02-01"',
